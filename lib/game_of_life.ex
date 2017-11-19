@@ -1,7 +1,12 @@
 defmodule GameOfLife do
 
   def step(world) do
-    MapSet.new
+    world
+    |> MapSet.to_list
+    |> Stream.map(fn ({x, y}) -> {x, y, live_neighbors_count({x, y}, world)} end)
+    |> Stream.filter(fn ({x, y, neighbors}) -> neighbors > 1 and neighbors < 4 end)
+    |> Stream.map(fn ({x, y, _}) -> {x, y} end)
+    |> MapSet.new
   end
 
   def neighbors({x, y}) do
@@ -17,7 +22,5 @@ defmodule GameOfLife do
     |> MapSet.intersection(world)
     |> MapSet.size
   end
-
-
 
 end

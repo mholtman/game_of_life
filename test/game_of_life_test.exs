@@ -29,4 +29,16 @@ defmodule GameOfLifeTest do
 
     assert GameOfLife.live_neighbors_count({0,0}, world) == 3
   end
+
+  test "a cell with three live neighbors survives" do
+    world = [
+      {-1, -1},     {1, -1},
+              {0,0},
+                    {1, 1}
+    ] |> MapSet.new
+
+    expected = [{0,0}] |> MapSet.new
+
+    assert GameOfLife.step(world) == expected
+  end
 end
