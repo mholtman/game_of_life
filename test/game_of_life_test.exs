@@ -37,9 +37,8 @@ defmodule GameOfLifeTest do
                     {1, 1}
     ] |> MapSet.new
 
-    expected = [{0,0}] |> MapSet.new
-
-    assert GameOfLife.step(world) == expected
+    assert GameOfLife.step(world)
+    |> MapSet.member?({0,0})
   end
 
   test "a cell with two live neighbors survives" do
@@ -48,8 +47,19 @@ defmodule GameOfLifeTest do
               {0,0}
     ] |> MapSet.new
 
+    assert GameOfLife.step(world)
+    |> MapSet.member?({0,0})
+  end
+
+  test "a neighboring cell with exactly 3 neighbors comes to life" do
+    world = [
+      {-1, -1},     {1, -1},
+             # {0, 0} will come to life...
+                    {1, 1}
+    ] |> MapSet.new
+
     expected = [{0,0}] |> MapSet.new
 
-    assert GameOfLife.step(world) == expected    
+    assert GameOfLife.step(world) == expected
   end
 end
