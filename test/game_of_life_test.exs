@@ -9,4 +9,14 @@ defmodule GameOfLifeTest do
     world = [{0,0}] |> MapSet.new
     assert MapSet.new == GameOfLife.step(world)
   end
+
+  test "a cell can find its neighbors" do
+    expected = [
+      {-1,-1}, {0,-1}, {1, -1},
+      {-1, 0},         {1, 0},
+      {-1, 1}, {0, 1}, {1, 1}
+    ] |> MapSet.new
+
+    assert GameOfLife.neighbors({0,0}) == expected
+  end
 end
