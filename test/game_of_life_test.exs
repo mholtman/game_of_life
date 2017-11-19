@@ -7,7 +7,7 @@ defmodule GameOfLifeTest do
 
   test "a world with a single live cell returns an empty world" do
     world = [{0,0}] |> MapSet.new
-    assert MapSet.new == GameOfLife.step(world)
+    assert GameOfLife.step(world) == MapSet.new
   end
 
   test "a cell can find its neighbors" do
@@ -18,5 +18,15 @@ defmodule GameOfLifeTest do
     ] |> MapSet.new
 
     assert GameOfLife.neighbors({0,0}) == expected
+  end
+
+  test "a cell can count live neighbors" do
+    world = [
+      {-1, -1},     {1, -1},
+              {0,0},
+                    {1, 1}
+    ] |> MapSet.new
+
+    assert GameOfLife.live_neighbors_count({0,0}, world) == 3
   end
 end

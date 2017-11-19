@@ -12,4 +12,12 @@ defmodule GameOfLife do
     |> MapSet.difference(MapSet.new([{x,y}]))
   end
 
+  def live_neighbors_count(cell, world) do
+    neighbors(cell)
+    |> MapSet.intersection(world)
+    |> MapSet.size
+  end
+
+
+
 end
