@@ -41,4 +41,15 @@ defmodule GameOfLifeTest do
 
     assert GameOfLife.step(world) == expected
   end
+
+  test "a cell with two live neighbors survives" do
+    world = [
+      {-1, -1},     {1, -1},
+              {0,0}
+    ] |> MapSet.new
+
+    expected = [{0,0}] |> MapSet.new
+
+    assert GameOfLife.step(world) == expected    
+  end
 end
