@@ -8,8 +8,16 @@ defmodule GameOfLife do
     world
     |> MapSet.to_list
     |> Stream.map(fn ({x, y}) -> {x, y, live_neighbors_count({x, y}, world)} end)
-    |> Stream.filter(fn ({_, _, neighbors}) -> neighbors > 1 and neighbors < 4 end)
+    |> Stream.filter(&alive?/1)
     |> MapSet.new(fn ({x, y, _}) -> {x, y} end)
+  end
+
+  defp alive?({_x, _y, neighbors}) do
+    neighbors > 1 and neighbors < 4
+  end
+
+  defp new_birth?({_x, _y, neighbors}) do
+    neighbors == 3
   end
 
   defp births(world) do
@@ -20,7 +28,7 @@ defmodule GameOfLife do
     |> MapSet.difference(world)
     |> MapSet.to_list
     |> Stream.map(fn ({x, y}) -> {x, y, live_neighbors_count({x, y}, world)} end)
-    |> Enum.filter(fn ({_, _, neighbors}) -> neighbors == 3 end)
+    |> Enum.filter(&new_birth?/1)
     |> MapSet.new(fn ({x, y, _}) -> {x, y} end)
   end
 
