@@ -6,9 +6,15 @@ defmodule GameOfLife do
 
   defp survivors(world) do
     world
+    |> filter_to(&alive?/1, world)
+  end
+
+  @spec filter_to(MapSet.t, Function.t, MapSet.t) :: MapSet.t
+  defp filter_to(life, f, world) do
+    life
     |> MapSet.to_list
     |> Stream.map(fn ({x, y}) -> {x, y, live_neighbors_count({x, y}, world)} end)
-    |> Stream.filter(&alive?/1)
+    |> Enum.filter(f)
     |> MapSet.new(fn ({x, y, _}) -> {x, y} end)
   end
 
@@ -21,23 +27,24 @@ defmodule GameOfLife do
   end
 
   defp births(world) do
+    dead_neighbors(world)
+    |> filter_to(&new_birth?/1, world)
+  end
+
+  defp dead_neighbors(world) do
     world
     |> MapSet.to_list
     |> Stream.map(&neighbors/1)
     |> Enum.reduce(MapSet.new, &MapSet.union/2)
     |> MapSet.difference(world)
-    |> MapSet.to_list
-    |> Stream.map(fn ({x, y}) -> {x, y, live_neighbors_count({x, y}, world)} end)
-    |> Enum.filter(&new_birth?/1)
-    |> MapSet.new(fn ({x, y, _}) -> {x, y} end)
   end
 
   def neighbors({x, y}) do
-    for delta_x <- [-1, 0, 1], delta_y <- [-1, 0, 1] do
-      {x + delta_x, y + delta_y}
+    range = [-1, 0, 1]
+    for delta_x <- range, delta_y <- range, !(delta_x == 0 and delta_y == 0) do
+        {x + delta_x, y + delta_y}
     end
     |> MapSet.new
-    |> MapSet.delete({x,y})
   end
 
   def live_neighbors_count(cell, world) do
